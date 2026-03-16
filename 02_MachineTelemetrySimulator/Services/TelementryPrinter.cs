@@ -11,7 +11,7 @@ namespace _02_MachineTelemetrySimulator.Services
         {
             string status = data.IsRunning ? "Running" : "Stopped";
 
-            Console.WriteLine($"[{data.Timestamp:HH:mm:SS}] {data.MachineName} | Temp: {data.Temperature:F1}°C | {status}");
+            Console.WriteLine($"[{data.Timestamp:HH:mm:ss}] {data.MachineName} | Temp: {data.Temperature:F1}°C | {status}");
         }
     }
 }
