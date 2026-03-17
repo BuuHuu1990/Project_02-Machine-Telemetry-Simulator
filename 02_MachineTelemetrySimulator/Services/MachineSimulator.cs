@@ -8,23 +8,39 @@ namespace _02_MachineTelemetrySimulator.Services
 {
     public class MachineSimulator
     {
-        private string MachineName;
-        TelementryPrinter TelementryPrinter = new();
+        private string _machineName;
+        TelementryPrinter _telementryPrinter = new();
         private readonly Random _random = new Random();
  
-   
+
         public MachineSimulator(string machineName)
         {
-            MachineName = machineName;
+            _machineName = machineName;
         }
 
-        public async Task RunAsync()
+
+        public async Task RunAsync(CancellationToken token)
         {
-            for (int i = 0; i <= 5; i++)
+            try
             {
-                TelemetryData telemetryData = new(MachineName, DateTime.UtcNow, GetTemp(), true);
-                TelementryPrinter.Print(telemetryData);
-                await Task.Delay(1000);
+                for (int i = 0; i <= 5; i++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        Console.WriteLine($"{_machineName} stopping...");
+                        break;
+                    }
+
+                    TelemetryData telemetryData = new(_machineName, DateTime.UtcNow, GetTemp(), true);
+
+                    _telementryPrinter.Print(telemetryData);
+
+                    await Task.Delay(1000, token);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 

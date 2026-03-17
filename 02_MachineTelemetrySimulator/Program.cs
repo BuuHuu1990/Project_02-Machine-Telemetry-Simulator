@@ -9,6 +9,18 @@ internal class Program
         MachineSimulator machine2 = new("02_Trockner");
         MachineSimulator machine3 = new("03_Blaskammer");
 
-        await Task.WhenAll(machine1.RunAsync(), machine2.RunAsync(), machine3.RunAsync());
+        var cts = new CancellationTokenSource();
+        CancellationToken token = cts.Token;
+
+        Task t1 = machine1.RunAsync(token);
+        Task t2 = machine2.RunAsync(token);
+        Task t3 = machine3.RunAsync(token);   
+
+        Console.WriteLine("Press any key to stop simulation...");
+        Console.ReadKey();
+        cts.Cancel();
+
+        await Task.WhenAll(t1, t2, t3);
+        Console.WriteLine("Simulation stopped.");
     }
 }
